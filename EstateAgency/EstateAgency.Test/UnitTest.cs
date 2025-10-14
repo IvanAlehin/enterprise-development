@@ -27,7 +27,7 @@ public class UnitTest
     /// Test: Get all sellers who submitted applications within a date range.
     /// </summary>
     [Fact]
-    public void Sellers_ByDateRange_ShouldReturnCorrect()
+    public void GetSellersByPeriod()
     {
         var start = new DateTime(2024, 06, 01);
         var end = new DateTime(2024, 08, 31);
@@ -47,7 +47,7 @@ public class UnitTest
     /// Test: Top 5 clients by number of applications (Purchase or Sale separately)
     /// </summary>
     [Fact]
-    public void Top5Clients_ByApplications_ShouldReturnCorrect()
+    public void Top5Clients()
     {
         var topBuyers = _applications
             .Where(a => a.Type == ApplicationType.Purchase)
@@ -76,7 +76,7 @@ public class UnitTest
     /// Test: Number of applications per real estate type
     /// </summary>
     [Fact]
-    public void Applications_ByRealEstateType_ShouldReturnCorrect()
+    public void RequestsByEstateType()
     {
         var result = _applications
             .Join(_realEstates, a => a.RealEstateId, r => r.Id, (a, r) => r.Type)
@@ -91,7 +91,7 @@ public class UnitTest
     /// Test: Clients with the minimum transaction amount
     /// </summary>
     [Fact]
-    public void Clients_WithMinimumTransaction_ShouldReturnCorrect()
+    public void ClientsWithMinTransaction()
     {
         var minAmount = _applications.Min(a => a.TransactionAmount);
 
@@ -109,7 +109,7 @@ public class UnitTest
     /// Test: Clients searching for real estate of a specific type, sorted by FullName
     /// </summary>
     [Fact]
-    public void Clients_ByRealEstateType_ShouldReturnCorrect()
+    public void ClientsByEstateType()
     {
         var type = RealEstateType.Apartment;
 
