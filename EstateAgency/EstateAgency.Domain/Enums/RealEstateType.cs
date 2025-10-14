@@ -4,7 +4,7 @@ namespace EstateAgency.Domain.Enums;
 /// Defines the detailed classification of real estate objects 
 /// according to their structural type and functional characteristics.
 /// </summary>
-public enum ObjectType
+public enum RealEstateType
 {
     /// <summary>
     /// Apartment within a residential building or complex.

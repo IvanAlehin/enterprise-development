@@ -3,7 +3,7 @@ namespace EstateAgency.Domain.Enums;
 /// <summary>
 /// Intended usage of a real estate object.
 /// </summary>
-public enum ObjectPurpose
+public enum RealEstatePurpose
 {
     /// <summary>
     /// Property intended for living (apartments, houses).

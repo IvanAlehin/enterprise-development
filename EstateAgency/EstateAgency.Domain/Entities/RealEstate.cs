@@ -16,12 +16,12 @@ public class RealEstate
     /// <summary>
     /// Type of the real estate (apartment, house, land, etc.).
     /// </summary>
-    public required ObjectType Type { get; set; }
+    public required RealEstateType Type { get; set; }
 
     /// <summary>
     /// Purpose/usage category of the real estate (residential, commercial, etc.).
     /// </summary>
-    public required ObjectPurpose Purpose { get; set; }
+    public required RealEstatePurpose Purpose { get; set; }
 
     /// <summary>
     /// Cadastral number (string format, may include separators).
