@@ -23,5 +23,15 @@ public enum ObjectPurpose
     /// <summary>
     /// Property used for farming and agricultural purposes.
     /// </summary>
-    Agricultural
+    Agricultural,
+
+    /// <summary>
+    /// Properties intended for recreational/holiday use
+    /// </summary>
+    Recreational,
+
+    /// <summary>
+    /// Properties for utilities or auxiliary purposes (garage, storage, etc.)
+    /// </summary>
+    Utility
 }

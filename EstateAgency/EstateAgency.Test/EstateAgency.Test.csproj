@@ -18,4 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EstateAgency.Domain\EstateAgency.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
