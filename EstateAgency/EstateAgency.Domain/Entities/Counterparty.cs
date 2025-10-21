@@ -9,7 +9,7 @@ public class Counterparty
     /// <summary>
     /// Unique identifier for the counterparty.
     /// </summary>
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// Full name (Last, First, Middle) of the counterparty.

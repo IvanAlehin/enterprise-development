@@ -11,7 +11,7 @@ public class Application
     /// <summary>
     /// Unique identifier for the application.
     /// </summary>
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// Foreign key reference to the counterparty associated with this application.

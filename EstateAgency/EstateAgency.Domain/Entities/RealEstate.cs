@@ -11,7 +11,7 @@ public class RealEstate
     /// <summary>
     /// Primary key — integer identifier for the object.
     /// </summary>
-    public int Id { get; set; }
+    public required int Id { get; set; }
 
     /// <summary>
     /// Type of the real estate (apartment, house, land, etc.).
