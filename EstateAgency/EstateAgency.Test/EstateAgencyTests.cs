@@ -1,6 +1,5 @@
 ﻿using EstateAgency.Domain.Enums;
 using EstateAgency.Test.Data;
-using Xunit;
 
 namespace EstateAgency.Test;
 
@@ -28,8 +27,6 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
             .Order()
             .ToList();
         
-        Assert.NotEmpty(sellers);
-        Assert.Equal(expected.Length, sellers.Count);
         Assert.Equal(expected, sellers);
     }
 
@@ -77,13 +74,8 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
             .Join(testData.Counterparties, x => x.CounterpartyId, c => c.Id, (x, c) => new { c.FullName, x.Count })
             .ToList();
 
-        Assert.Equal(5, topBuyers.Count);
-        Assert.Equal(expectedBuyers.Select(x => x.Name), topBuyers.Select(x => x.FullName));
-        Assert.All(topBuyers, buyer => Assert.Equal(1, buyer.Count));
-
-        Assert.Equal(5, topSellers.Count);
-        Assert.Equal(expectedSellers.Select(x => x.Name), topSellers.Select(x => x.FullName));
-        Assert.All(topSellers, seller => Assert.Equal(1, seller.Count));
+        Assert.Equal(expectedBuyers, topBuyers.Select(b => new { Name = b.FullName, b.Count }));
+        Assert.Equal(expectedSellers, topSellers.Select(s => new { Name = s.FullName, s.Count }));
     }
 
     /// <summary>
@@ -111,13 +103,7 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
             .OrderBy(x => x.Type)
             .ToList();
 
-        Assert.NotEmpty(result);
-        Assert.Equal(expectedCounts.Count, result.Count);
-        foreach (var item in result)
-        {
-            Assert.True(expectedCounts.ContainsKey(item.Type));
-            Assert.Equal(expectedCounts[item.Type], item.Count);
-        }
+        Assert.Equal(expectedCounts, result.ToDictionary(r => r.Type, r => r.Count));
     }
 
     /// <summary>
@@ -126,8 +112,8 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
     [Fact]
     public void ClientsWithMinTransaction()
     {
-        var expectedMinAmount = 1200000m;
-        var expectedClient = "Elena Popova";
+        const decimal expectedMinAmount = 1200000m;
+        const string expectedClient = "Elena Popova";
         
         var minAmount = testData.Applications.Min(a => a.TransactionAmount);
         var clients = testData.Applications
@@ -138,10 +124,8 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
             .Order()
             .ToList();
 
-        Assert.NotEmpty(clients);
         Assert.Equal(expectedMinAmount, minAmount);
-        Assert.Single(clients);
-        Assert.Contains(expectedClient, clients);
+        Assert.Equal([expectedClient], clients);
     }
 
     /// <summary>
@@ -162,9 +146,6 @@ public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<Fixtur
             .Order()
             .ToList();
 
-        Assert.NotEmpty(clients);
-        Assert.Equal(expectedClients.Length, clients.Count);
         Assert.Equal(expectedClients, clients);
-        Assert.True(clients.SequenceEqual(clients.Order()));
     }
 }
