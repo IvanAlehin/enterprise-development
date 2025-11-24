@@ -1,7 +1,7 @@
 using EstateAgency.Domain.Entities;
 using EstateAgency.Domain.Enums;
 
-namespace EstateAgency.Test.Data;
+namespace EstateAgency.Domain.Data;
 
 /// <summary>
 /// Provides test fixture data for unit tests.

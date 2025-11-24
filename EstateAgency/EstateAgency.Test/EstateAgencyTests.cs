@@ -1,5 +1,5 @@
-﻿using EstateAgency.Domain.Enums;
-using EstateAgency.Test.Data;
+﻿using EstateAgency.Domain.Data;
+using EstateAgency.Domain.Enums;
 
 namespace EstateAgency.Test;
 
