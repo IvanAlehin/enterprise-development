@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateAgency.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateAgency.Application.Contracts", "EstateAgency.Application.Contracts\EstateAgency.Application.Contracts.csproj", "{B0731E9A-E2E9-4DB9-9F99-AD2B93FF5C4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstateAgency.Api", "EstateAgency.Api\EstateAgency.Api.csproj", "{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{B0731E9A-E2E9-4DB9-9F99-AD2B93FF5C4A}.Release|x64.Build.0 = Release|Any CPU
 		{B0731E9A-E2E9-4DB9-9F99-AD2B93FF5C4A}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0731E9A-E2E9-4DB9-9F99-AD2B93FF5C4A}.Release|x86.Build.0 = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|x64.Build.0 = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Debug|x86.Build.0 = Debug|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|x64.ActiveCfg = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|x64.Build.0 = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDCFEAB2-892D-4CE8-89D2-1BE44DA091BB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
