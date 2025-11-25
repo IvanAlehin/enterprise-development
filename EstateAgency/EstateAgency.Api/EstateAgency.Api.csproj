@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EstateAgencty.Infrastructure\EstateAgency.Infrastructure.csproj" />
     <ProjectReference Include="..\EstateAgency.Application.Contracts\EstateAgency.Application.Contracts.csproj" />
+    <ProjectReference Include="..\EstateAgency.Infrastructure\EstateAgency.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
