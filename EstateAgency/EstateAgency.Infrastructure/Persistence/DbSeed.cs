@@ -14,7 +14,7 @@ public static class DbSeed
     public static void Seed(this AppDbContext context)
     {
         if (context.Counterparties.Any() || context.RealEstates.Any() || context.Applications.Any()) return;
-        var fixture = new FixtureDataClass();
+        var fixture = new DataSeeder();
         context.Counterparties.AddRange(fixture.Counterparties);
         context.RealEstates.AddRange(fixture.RealEstates);
         context.Applications.AddRange(fixture.Applications);

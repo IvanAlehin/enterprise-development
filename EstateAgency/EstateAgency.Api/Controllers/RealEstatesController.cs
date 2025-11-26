@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EstateAgency.Application.Contracts.Dto;
 using EstateAgency.Domain.Entities;
+using EstateAgency.Domain.Enums;
 using EstateAgency.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace EstateAgency.Api.Controllers;
 [ApiController]
 [Route("api/real-estates")]
 public class RealEstatesController(
-    IRepository<RealEstate> repo, 
+    IRepository<RealEstate> repo,
     IMapper mapper) : ControllerBase
 {
     /// <summary>
@@ -54,9 +55,22 @@ public class RealEstatesController(
     /// <returns>The created <see cref="RealEstateGetDto"/> with status 201 Created.</returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<RealEstateGetDto>> Create([FromBody] RealEstateEditDto dto)
     {
+        if (!Enum.TryParse<RealEstateType>(dto.Type, true, out var type))
+        {
+            return BadRequest($"Invalid Type value: '{dto.Type}'. Allowed values: {string.Join(", ", Enum.GetNames<RealEstateType>())}");
+        }
+        if (!Enum.TryParse<RealEstatePurpose>(dto.Purpose, true, out var purpose))
+        {
+            return BadRequest($"Invalid Purpose value: '{dto.Purpose}'. Allowed values: {string.Join(", ", Enum.GetNames<RealEstatePurpose>())}");
+        }
+
         var entity = mapper.Map<RealEstate>(dto);
+        entity.Type = type;
+        entity.Purpose = purpose;
+
         var created = await repo.AddAsync(entity);
         var resultDto = mapper.Map<RealEstateGetDto>(created);
         return CreatedAtAction(nameof(Get), new { id = resultDto.Id }, resultDto);
@@ -74,9 +88,22 @@ public class RealEstatesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<RealEstateGetDto>> Update(int id, [FromBody] RealEstateEditDto dto)
     {
+        if (!Enum.TryParse<RealEstateType>(dto.Type, true, out var type))
+        {
+            return BadRequest($"Invalid Type value: '{dto.Type}'. Allowed values: {string.Join(", ", Enum.GetNames<RealEstateType>())}");
+        }
+        if (!Enum.TryParse<RealEstatePurpose>(dto.Purpose, true, out var purpose))
+        {
+            return BadRequest($"Invalid Purpose value: '{dto.Purpose}'. Allowed values: {string.Join(", ", Enum.GetNames<RealEstatePurpose>())}");
+        }
+
         var entity = await repo.GetByIdAsync(id);
         if (entity == null) return NotFound();
         mapper.Map(dto, entity);
+
+        entity.Type = type;
+        entity.Purpose = purpose;
+
         await repo.UpdateAsync(entity);
         var resultDto = mapper.Map<RealEstateGetDto>(entity);
         return Ok(resultDto);
@@ -90,11 +117,9 @@ public class RealEstatesController(
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id)
     {
-        var deleted = await repo.DeleteAsync(id);
-        if (!deleted) return NotFound();
+        await repo.DeleteAsync(id);
         return NoContent();
     }
 }

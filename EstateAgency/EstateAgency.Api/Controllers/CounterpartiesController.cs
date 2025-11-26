@@ -86,14 +86,12 @@ public class CounterpartiesController(
     /// Deletes a counterparty by its ID.
     /// </summary>
     /// <param name="id">The ID of the counterparty to delete.</param>
-    /// <returns>204 No Content if deleted; 404 Not Found if not found.</returns>
+    /// <returns>204 No Content if deleted.</returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(int id)
     {
-        var deleted = await repo.DeleteAsync(id);
-        if (!deleted) return NotFound();
+        await repo.DeleteAsync(id);
         return NoContent();
     }
 }

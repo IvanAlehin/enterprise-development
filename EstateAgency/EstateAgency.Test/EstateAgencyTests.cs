@@ -7,7 +7,7 @@ namespace EstateAgency.Test;
 /// Contains unit tests that validate business logic queries for the EstateAgency project.
 /// Uses FixtureDataClass as an in-memory data source.
 /// </summary>
-public class EstateAgencyTests(FixtureDataClass testData) : IClassFixture<FixtureDataClass>
+public class EstateAgencyTests(DataSeeder testData) : IClassFixture<DataSeeder>
 {
     /// <summary>
     /// Test: Get all sellers who submitted applications within a date range.

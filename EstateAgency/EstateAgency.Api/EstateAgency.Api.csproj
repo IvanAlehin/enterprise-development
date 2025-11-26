@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EstateAgency.Application.Contracts\EstateAgency.Application.Contracts.csproj" />
-    <ProjectReference Include="..\EstateAgency.Domain\EstateAgency.Domain.csproj" />
     <ProjectReference Include="..\EstateAgency.Infrastructure\EstateAgency.Infrastructure.csproj" />
     <ProjectReference Include="..\EstateAgency.ServiceDefaults\EstateAgency.ServiceDefaults.csproj" />
   </ItemGroup>

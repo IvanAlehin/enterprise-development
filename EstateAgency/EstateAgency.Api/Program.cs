@@ -19,10 +19,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.UseInlineDefinitionsForEnums();
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    var basePath = AppContext.BaseDirectory;
+
+    var xmlApi = Path.Combine(basePath, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+    c.IncludeXmlComments(xmlApi, includeControllerXmlComments: true);
+
+    var xmlApplication = Path.Combine(basePath, "EstateAgency.Application.Contracts.xml");
+    if (File.Exists(xmlApplication))
+    {
+        c.IncludeXmlComments(xmlApplication);
+    }
 });
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());

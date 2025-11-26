@@ -47,7 +47,7 @@ public class AnalyticsController(
         var sellersDtos = counterparties
             .Where(c => sellersIds.Contains(c.Id))
             .OrderBy(c => c.FullName)
-            .Select(c => mapper.Map<CounterpartyGetDto>(c));
+            .Select(mapper.Map<CounterpartyGetDto>);
 
         return Ok(sellersDtos);
     }
@@ -55,10 +55,10 @@ public class AnalyticsController(
     /// <summary>
     /// Gets the top 5 buyers and top 5 sellers by number of transactions.
     /// </summary>
-    /// <returns>An object containing top buyers and top sellers lists of <see cref="TopClientDto"/>.</returns>
+    /// <returns>An object containing top buyers and top sellers lists of <see cref="CounterpartyWithCountDto"/>.</returns>
     [HttpGet("top-clients")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<object>> GetTopClients()
+    public async Task<ActionResult<TopClientsDto>> GetTopClients()
     {
         var apps = await applicationsRepo.GetAllAsync();
         var counterparties = await counterpartiesRepo.GetAllAsync();
@@ -70,7 +70,7 @@ public class AnalyticsController(
             .OrderByDescending(x => x.Count)
             .ThenBy(x => x.CounterpartyId)
             .Take(5)
-            .Join(counterparties, x => x.CounterpartyId, c => c.Id, (x, c) => new TopClientDto(
+            .Join(counterparties, x => x.CounterpartyId, c => c.Id, (x, c) => new CounterpartyWithCountDto(
                 mapper.Map<CounterpartyGetDto>(c),
                 x.Count))
             .ToList();
@@ -82,12 +82,12 @@ public class AnalyticsController(
             .OrderByDescending(x => x.Count)
             .ThenBy(x => x.CounterpartyId)
             .Take(5)
-            .Join(counterparties, x => x.CounterpartyId, c => c.Id, (x, c) => new TopClientDto(
+            .Join(counterparties, x => x.CounterpartyId, c => c.Id, (x, c) => new CounterpartyWithCountDto(
                 mapper.Map<CounterpartyGetDto>(c),
                 x.Count))
             .ToList();
 
-        return Ok(new { TopBuyers = topBuyers, TopSellers = topSellers });
+        return Ok(new TopClientsDto(topBuyers, topSellers));
     }
 
     /// <summary>
@@ -160,7 +160,7 @@ public class AnalyticsController(
         var clientsDtos = counterparties
             .Where(c => clientIds.Contains(c.Id))
             .OrderBy(c => c.FullName)
-            .Select(c => mapper.Map<CounterpartyGetDto>(c))
+            .Select(mapper.Map<CounterpartyGetDto>)
             .ToList();
 
         return Ok(clientsDtos);
