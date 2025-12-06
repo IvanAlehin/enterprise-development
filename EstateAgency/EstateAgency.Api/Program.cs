@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using EstateAgency.Application.Contracts;
 using EstateAgency.Domain.Entities;
 using EstateAgency.Domain.Interfaces;
@@ -42,6 +43,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IRepository<EstateAgency.Domain.Entities.Application>, DbRepository<EstateAgency.Domain.Entities.Application>>();
 builder.Services.AddScoped<IRepository<RealEstate>, DbRepository<RealEstate>>();
 builder.Services.AddScoped<IRepository<Counterparty>, DbRepository<Counterparty>>();
+
+var kafkaConnection = builder.Configuration["ConnectionStrings:KafkaConnection"] ?? "localhost:9092";
+
+builder.Services.AddSingleton<IConsumer<Ignore, string>>(sp =>
+{
+    var config = new ConsumerConfig
+    {
+        BootstrapServers = kafkaConnection,
+        GroupId = Environment.GetEnvironmentVariable("KafkaGroupId") ?? "default-group",
+        AutoOffsetReset = AutoOffsetReset.Earliest,
+        EnableAutoCommit = false,
+        FetchMinBytes = int.Parse(Environment.GetEnvironmentVariable("KafkaFetchMinBytes") ?? "1")
+    };
+
+    return new ConsumerBuilder<Ignore, string>(config).Build();
+});
 
 var app = builder.Build();
 

@@ -13,11 +13,13 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="13.0.0" />
+    <PackageReference Include="Aspire.Hosting.Kafka" Version="9.5.2" />
     <PackageReference Include="Aspire.Hosting.MySql" Version="13.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EstateAgency.Api\EstateAgency.Api.csproj" />
+    <ProjectReference Include="..\EstateAgency.Kafka\EstateAgency.Kafka.csproj" />
   </ItemGroup>
 
 </Project>
