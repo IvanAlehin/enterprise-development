@@ -47,13 +47,25 @@
   - CounterpartiesController
   - AnalyticsController
 
-### 7. AppHost
+### 7. Kafka
+- Инфраструктура worker-сервисов:
+  - KafkaProducerWorker — генерирует заявки через ApplicationGenerator и публикует их в Kafka топик
+  - KafkaConsumerWorker — читает сообщения из Kafka, маппит DTO в сущности и сохраняет в БД, раполагается на уровне API.
+- Конфигурация через environment variables:
+  - KAFKA_TOPIC — имя топика
+  - KAFKA_PRODUCE_DELAY_MS — задержка между сообщениями
+  - KAFKA_GROUP_ID — идентификатор consumer group
+  - KAFKA_FETCH_MIN_BYTES - параметр batching
+
+### 8. AppHost
 Конфигурация и запуск приложения с использованием контейнеров
 
 ## Результат
 Создана полноценная предметная модель риэлторского агентства, оснащённая:
-- архитектурой уровня Domain → Application → Infrastructure → Api
+- архитектурой уровня Domain → Application → Infrastructure → Api → Kafka
 - системой DTO и маппингом через AutoMapper
 - реализацией репозиториев и EF Core контекста
 - REST-API с контроллерами для всех сущностей
-- unit-тестами на xUnit.
+- unit-тестами на xUnit
+- Kafka продюсером и консьюмером для обработки заявок
+- возможностью масштабирования через настройки batching и consumer group в Kafka
