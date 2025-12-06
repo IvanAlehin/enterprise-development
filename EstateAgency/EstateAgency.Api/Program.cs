@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using EstateAgency.Api;
 using EstateAgency.Application.Contracts;
 using EstateAgency.Domain.Entities;
 using EstateAgency.Domain.Interfaces;
@@ -45,6 +46,8 @@ builder.Services.AddScoped<IRepository<RealEstate>, DbRepository<RealEstate>>();
 builder.Services.AddScoped<IRepository<Counterparty>, DbRepository<Counterparty>>();
 
 var kafkaConnection = builder.Configuration["ConnectionStrings:KafkaConnection"] ?? "localhost:9092";
+
+builder.Services.AddHostedService<KafkaConsumerWorker>();
 
 builder.Services.AddSingleton<IConsumer<Ignore, string>>(sp =>
 {
