@@ -1,22 +1,33 @@
 using Confluent.Kafka;
 using EstateAgency.Kafka;
+using Microsoft.Extensions.Options;
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.Services.AddOptions<KafkaOptions>()
+    .Bind(builder.Configuration.GetSection("Kafka"));
+
 builder.Services.AddHostedService<KafkaProducerWorker>();
 
-var kafkaConnection = builder.Configuration["ConnectionStrings:KafkaConnection"] ?? "localhost:9092";
-
-builder.Services.AddSingleton<IProducer<Null, string>>(sp =>
+builder.Services.AddSingleton(sp =>
 {
-    var config = new ProducerConfig
+    var config = sp.GetRequiredService<IConfiguration>();
+
+    var kafkaConnection = config.GetConnectionString("KafkaConnection") ?? 
+        throw new InvalidOperationException("KafkaConnection string is missing");
+
+    var kafkaOptions = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
+
+    var producerConfig = new ProducerConfig
     {
         BootstrapServers = kafkaConnection,
         Acks = Acks.All,
         EnableIdempotence = true
     };
-    return new ProducerBuilder<Null, string>(config).Build();
+
+    return new ProducerBuilder<Null, string>(producerConfig).Build();
 });
 
 builder.Services.AddSingleton<ApplicationGenerator>();

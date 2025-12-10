@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace EstateAgency.Kafka;
@@ -9,28 +10,24 @@ namespace EstateAgency.Kafka;
 /// <param name="logger">Logging service.</param>
 /// <param name="generator">Random application generator.</param>
 /// <param name="producer">Kafka message producer.</param>
+/// <param name="options">Kafka options params.</param>
 public class KafkaProducerWorker(
     ILogger<KafkaProducerWorker> logger,
     ApplicationGenerator generator,
     IProducer<Null, string> producer,
-    IConfiguration configuration) : BackgroundService
+    IOptions<KafkaOptions> options) : BackgroundService
 {
     /// <summary>
-    /// Kafka topic to publish messages to.
+    /// Contains options for Kafka producer.
     /// </summary>
-    private readonly string _topic = configuration["KafkaTopic"] ?? "kafka-topic";
-
-    /// <summary>
-    /// Delay between produced messages in milliseconds.
-    /// </summary>
-    private readonly int _delayMs = int.TryParse(configuration["KafkaProduceDelay"], out var val) ? val : 1000;
+    private readonly KafkaOptions _options = options.Value;
 
     /// <summary>
     /// Produces messages in a loop until cancellation.
     /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("KafkaProducerWorker started. Producing to topic {Topic} every {Delay} ms", _topic, _delayMs);
+        logger.LogInformation("KafkaProducerWorker started. Producing to topic {Topic} every {Delay} ms", _options.Topic, _options.ProduceDelayMs);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -41,7 +38,7 @@ public class KafkaProducerWorker(
             };
             try
             {
-                var deliveryResult = await producer.ProduceAsync(_topic, message, stoppingToken);
+                var deliveryResult = await producer.ProduceAsync(_options.Topic, message, stoppingToken);
                 logger.LogInformation("Produced application to {TopicPartitionOffset}", deliveryResult.TopicPartitionOffset);
             }
             catch (ProduceException<Null, string> ex)
@@ -53,7 +50,7 @@ public class KafkaProducerWorker(
                 logger.LogError(ex, "Unexpected error producing message");
             }
 
-            await Task.Delay(_delayMs, stoppingToken);
+            await Task.Delay(_options.ProduceDelayMs, stoppingToken);
         }
     }
 }

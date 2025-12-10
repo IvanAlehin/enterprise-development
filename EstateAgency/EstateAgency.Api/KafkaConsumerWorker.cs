@@ -2,6 +2,7 @@ using AutoMapper;
 using Confluent.Kafka;
 using EstateAgency.Application.Contracts.Dto;
 using EstateAgency.Domain.Interfaces;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace EstateAgency.Api;
@@ -13,42 +14,43 @@ namespace EstateAgency.Api;
 /// <param name="consumer">Kafka consumer instance.</param>
 /// <param name="scopeFactory">Factory for creating service scopes.</param>
 /// <param name="mapper">Object mapper.</param>
+/// <param name="options">Kafka options params.</param>
 public class KafkaConsumerWorker(
     ILogger<KafkaConsumerWorker> logger,
     IConsumer<Ignore, string> consumer,
     IServiceScopeFactory scopeFactory,
     IMapper mapper,
-    IConfiguration configuration) : BackgroundService
+    IOptions<KafkaOptions> options) : BackgroundService
 {
     /// <summary>
-    /// Kafka topic to listen to.
+    /// Contains options for Kafka consumer.
     /// </summary>
-    private readonly string _topic = configuration["KafkaTopic"] ?? "kafka-topic";
+    private readonly KafkaOptions _options = options.Value;
 
     /// <summary>
     /// Consumes messages in a loop and processes them until cancellation.
     /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        consumer.Subscribe(_topic);
+        consumer.Subscribe(_options.Topic);
 
-        logger.LogInformation("KafkaConsumerWorker started. Listening topic: {Topic}", _topic);
+        logger.LogInformation("KafkaConsumerWorker started. Listening topic: {Topic}", _options.Topic);
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var cr = consumer.Consume(stoppingToken);
-                if (cr?.Message?.Value == null)
+                var consumeResult = consumer.Consume(stoppingToken);
+                if (consumeResult?.Message?.Value == null)
                 {
                     logger.LogWarning("Received empty Kafka message");
                     continue;
                 }
 
-                var dto = JsonSerializer.Deserialize<ApplicationEditDto>(cr.Message.Value);
+                var dto = JsonSerializer.Deserialize<ApplicationEditDto>(consumeResult.Message.Value);
                 if (dto == null)
                 {
-                    logger.LogWarning("Failed to deserialize message: {Value}", cr.Message.Value);
+                    logger.LogWarning("Failed to deserialize message: {Value}", consumeResult.Message.Value);
                     continue;
                 }
 
@@ -59,7 +61,7 @@ public class KafkaConsumerWorker(
                 var entity = mapper.Map<Domain.Entities.Application>(dto);
                 var addedEntity = await applicationRepo.AddAsync(entity);
                 logger.LogInformation("Saved Application: {@Application}", addedEntity);
-                consumer.Commit(cr);
+                consumer.Commit(consumeResult);
             }
             catch (ConsumeException cex)
             {

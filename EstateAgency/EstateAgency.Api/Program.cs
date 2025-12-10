@@ -6,6 +6,7 @@ using EstateAgency.Domain.Interfaces;
 using EstateAgency.Infrastructure.Persistence;
 using EstateAgency.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -45,22 +46,30 @@ builder.Services.AddScoped<IRepository<EstateAgency.Domain.Entities.Application>
 builder.Services.AddScoped<IRepository<RealEstate>, DbRepository<RealEstate>>();
 builder.Services.AddScoped<IRepository<Counterparty>, DbRepository<Counterparty>>();
 
-var kafkaConnection = builder.Configuration["ConnectionStrings:KafkaConnection"] ?? "localhost:9092";
+builder.Services.AddOptions<KafkaOptions>()
+    .Bind(builder.Configuration.GetSection("Kafka"));
 
 builder.Services.AddHostedService<KafkaConsumerWorker>();
 
-builder.Services.AddSingleton<IConsumer<Ignore, string>>(sp =>
+builder.Services.AddSingleton(sp =>
 {
-    var config = new ConsumerConfig
+    var config = sp.GetRequiredService<IConfiguration>();
+
+    var kafkaConnection = config.GetConnectionString("KafkaConnection")
+        ?? throw new InvalidOperationException("KafkaConnection string is missing");
+
+    var kafkaOptions = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
+
+    var consumerConfig = new ConsumerConfig
     {
         BootstrapServers = kafkaConnection,
-        GroupId = Environment.GetEnvironmentVariable("KafkaGroupId") ?? "default-group",
+        GroupId = kafkaOptions.GroupId,
         AutoOffsetReset = AutoOffsetReset.Earliest,
         EnableAutoCommit = false,
-        FetchMinBytes = int.Parse(Environment.GetEnvironmentVariable("KafkaFetchMinBytes") ?? "1")
+        FetchMinBytes = kafkaOptions.FetchMinBytes
     };
 
-    return new ConsumerBuilder<Ignore, string>(config).Build();
+    return new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
 });
 
 var app = builder.Build();
