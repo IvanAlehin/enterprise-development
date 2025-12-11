@@ -18,8 +18,6 @@ builder.Services.AddSingleton(sp =>
     var kafkaConnection = config.GetConnectionString("KafkaConnection") ?? 
         throw new InvalidOperationException("KafkaConnection string is missing");
 
-    var kafkaOptions = sp.GetRequiredService<IOptions<KafkaOptions>>().Value;
-
     var producerConfig = new ProducerConfig
     {
         BootstrapServers = kafkaConnection,
